@@ -1,4 +1,5 @@
-DDSim
-=====
+DDSim (Dynamic Distributed Simulator)
+======================================
 
-Dynamic Distributed Simulator
+Implementation of the Chandy-Misra algorithm.
+
