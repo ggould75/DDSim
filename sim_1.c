@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "ipc_lp_sim.h"
-
+ 
 #define         LPNAME       "LP1"
 #define         NEIGHBOUR1   "LP2"
 
