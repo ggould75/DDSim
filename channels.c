@@ -115,19 +115,8 @@ send_msg_to_lp (void) {
          cond_ok = TRUE;
 		 
          if (curr_ts <= clock + lp->lookahead) {
-/*            for (c = 0; cond_ok && (c < channels_in->len-1); c++) {
-               lp_in = (LPInfo *) g_ptr_array_index (channels_in, c);
-               if (lp == lp_in)
-                  continue;
-               if (curr_ts > lp_in->channel_time[0]+lp->lookahead) {
-                  cond_ok = FALSE;
-			   }
-              #ifdef DEBUG
-               printf ("channel_time %s=%.2f\n", lp_in->name,lp_in->channel_time[0]);
-              #endif
-            }*/  // tutto questo non serve a NIENTE !!!!
+             // useless!?
          } else break;
-//         if (!cond_ok) break;
 
          switch (f->type) {
             case FULL_MSG:
@@ -162,11 +151,11 @@ send_msg_to_lp (void) {
       }
    }
    
-   /* spedisce msg null su tutti i canali uscenti usando come ts il lower bound
-    * ai msg futuri spediti (= clock  + lookahead del canale di out) */
+   // Send a null msg on all the output channels using the lower bound of the future sent messsages
+   // as ts (= clock + out channel lookahead)
    if (clock != last_clock) {
      #ifdef DEBUG
-	  printf("inizio spediz. msg null\n");
+	  printf("start to send null msg\n");
      #endif
       send_null_msg_to_all (clock);
       last_clock = clock;
@@ -228,7 +217,7 @@ flush_all_out_queue (void) {
    }
  
   #ifdef DEBUG
-   printf("inizio spediz. msg null\n");
+   printf("start to send null msg\n");
   #endif
    for (i = 0; i < channels_out->len; i++) {
       lp = (LPInfo *)g_ptr_array_index (channels_out, i);
@@ -238,8 +227,8 @@ flush_all_out_queue (void) {
 }
 
 
-/* alla prima chiamata restituisce il controllo solo dopo aver ricevuto
- * almeno un msg su ogni canale di IN */
+// The first time it is called forward the ownership only after receiving at least one msg
+// on each input channel
 int 
 recv_msg_from_lp (void) {
    int                i, res;
@@ -259,7 +248,7 @@ recv_msg_from_lp (void) {
       at_least_one_msg = TRUE;
       rset = allset_in;
       res = select (maxfd_in+1, &rset, NULL, NULL, NULL);
-      if (res < 0) error_exit ("select fallita:");
+      if (res < 0) error_exit ("select failed:");
       if (res != 0) {
          for (i = 0; i < channels_in->len-1; i++) {
             lp = (LPInfo *) g_ptr_array_index (channels_in, i);
@@ -349,9 +338,8 @@ create_channel (LPInfo *lp,
 }
 
 
-/* legge il file di config.
- * !!!! NON CI SONO CONTROLLI sulla correttezza del file, quindi se i file di config
- * non solo scritti rispettando il formato... :-(((( */
+// Read config.
+// Notice that there are no correctness checks on this file!
 int
 parse_config_file (char *filename) {		
 	int      local_port_number;
@@ -385,7 +373,7 @@ parse_config_file (char *filename) {
         lpinfo->channel_time[0] = lpinfo->channel_time[1] = 0.0;
         lpinfo->type = BOTH;
         lpinfo->queue_in = g_queue_new ();
-        lpinfo->queue_out = NULL; // non ci sono funzioni per creare una GList
+        lpinfo->queue_out = NULL;
         g_ptr_array_add (channels_in, (gpointer)lpinfo);
         g_ptr_array_add (channels_out, (gpointer)lpinfo);
         create_channel (lpinfo, IN, (unsigned short int)local_port_number);
@@ -438,7 +426,7 @@ parse_config_file (char *filename) {
                     lpinfo->port);
     }
 
-    /* crea sempre un canale di ingresso per schedulare eventi locali */
+    // Always creates an input channel to schedule local events
     lpinfo = (LPInfo *)malloc (sizeof (LPInfo));
     local_lp = lpinfo;
     strcpy (lpinfo->name, my_lp_name);
@@ -454,7 +442,7 @@ parse_config_file (char *filename) {
 	fflush (stdout);
 }
 
-/* si sblocca solo quando tutti i vicini si sono collegati */
+// it is unlocked only when all its neighbors are connected
 int
 connect_to_all_my_neighbours (void) {
     struct sockaddr_in   Client, Server;
@@ -473,7 +461,7 @@ connect_to_all_my_neighbours (void) {
         if (n_in > 0) {
             rset = allset;
             res = select (maxfd+1, &rset, NULL, NULL, &timeout);
-            if (res < 0) error_exit ("select fallita\n");
+            if (res < 0) error_exit ("select failed\n");
 			if (res != 0) {
               for (i = 0; i < channels_in->len-1; i++) {
                   lp = (LPInfo *) g_ptr_array_index (channels_in, i);
