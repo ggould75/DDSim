@@ -1,7 +1,9 @@
 #include "globals.h"
 
 
-/* print error msg and exit */
+/**
+ * Prints an error and exits
+ */
 void 
 error_exit (const char *str) {
     char strmess[1024];
@@ -14,7 +16,9 @@ error_exit (const char *str) {
     exit (1);
 }
 
-/* stampa solo un msg di errore */
+/**
+ * Prints an error
+ */
 void 
 print_error (const char *str) {
     char strmess[1024];
@@ -26,7 +30,10 @@ print_error (const char *str) {
     fflush (stderr);
 }
 
-/* usata solo per debug: stampa coda locale o coda_out di lp specificato */
+/**
+ * Debug only.
+ * Print the local queue of an LP
+ */
 void
 stampa_coda (LPInfo *lp, int what) {
     GList *tmp = (what == 0 ? lp->queue_out : lp->queue);
@@ -42,7 +49,10 @@ stampa_coda (LPInfo *lp, int what) {
     printf("\n");
 }
 
-/* usata solo per debug: stampa coda_in di lp specificato */
+/**
+ * Debug only.
+ * Print the queue_in of an LP
+ */
 void
 stampa_coda_in (LPInfo *lp) {
     GList *tmp;
