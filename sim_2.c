@@ -48,11 +48,11 @@ int main(int argc, char* argv[])
              end_reached = TRUE;
          } else {
             strncpy (dest, rnd_dest(), 14);
-            printf ("[%s]: Ricevuto da %s, '%.2f %s'\n", 
+            printf ("[%s]: Received from %s, '%.2f %s'\n",
                       LPNAME, msg->target, msg->time_stamp, msg->msg);
 			ts = clock + (strcmp(dest,NEIGHBOUR1)==0 ? 0.2+rnd(0,2) : 0.4+rnd(0,2));
             schedule_extern_event (ts, dest, msg->msg);
-            printf ("[%s]:   Schedulato '%.2f %s' per %s\n", LPNAME, ts, msg->msg, dest);
+            printf ("[%s]:   Scheduled '%.2f %s' for %s\n", LPNAME, ts, msg->msg, dest);
          }
          g_queue_free (queue);         
       }

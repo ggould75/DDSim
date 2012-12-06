@@ -34,11 +34,11 @@ int main(int argc, char* argv[])
              printf ("[%s]: -- end condition reached, clock=%.2f --\n", LPNAME, clock);
              end_reached = TRUE;
          } else {
-            printf ("[%s]: Ricevuto da %s, '%.2f %s'\n", 
+            printf ("[%s]: Received from %s, '%.2f %s'\n", 
                       LPNAME, msg->target, msg->time_stamp, msg->msg);
             ts = clock + 0.7 + rnd(0,2);
             schedule_extern_event (ts, NEIGHBOUR1, msg->msg);
-            printf ("[%s]:   Schedulato '%.2f %s' per %s\n", LPNAME, ts, msg->msg, NEIGHBOUR1);
+            printf ("[%s]:   Scheduled '%.2f %s' for %s\n", LPNAME, ts, msg->msg, NEIGHBOUR1);
          }
          g_queue_free (queue);
       }

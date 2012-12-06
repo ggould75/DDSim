@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
       ts = last_ts+rnd(0,2);
       last_ts = ts;
       sprintf (lmsg, "msg%d", i);
-      printf ("[%s]: schedulato evento locale %.2f\n", LPNAME, ts);
+      printf ("[%s]: local event scheduled %.2f\n", LPNAME, ts);
       schedule_local_event (ts, lmsg);
       i++;
    } while (last_ts < end_clock);
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
          } else {
             ts = clock + 0.5 + rnd(0,1);
             schedule_extern_event (ts, "LP2", msg->msg);
-            printf ("[%s]: Schedulato '%.2f %s' per LP2\n", LPNAME, ts, msg->msg);
+            printf ("[%s]: Scheduled '%.2f %s' for LP2\n", LPNAME, ts, msg->msg);
          }
          g_queue_free (queue);
       }
