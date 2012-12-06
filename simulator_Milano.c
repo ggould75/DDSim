@@ -52,7 +52,7 @@ create_submsg (char type[], char from[]) {
 
 void
 arrival_event_handler (void) {
-   printf ("[%s]:   %.1f  In attesa di atterrare volo da %s\n", 
+   printf ("[%s]:   %.1f  Waiting to land from %s\n", 
              LPNAME, msg->time_stamp, msg->target);
    in_the_air++;
    if (runwayfree)
@@ -62,7 +62,7 @@ arrival_event_handler (void) {
 
 void
 landed_event_handler (void) {
-   printf ("[%s]:     %.1f  Atterrato volo da %s\n", 
+   printf ("[%s]:     %.1f  Flight landed from %s\n",
              LPNAME, msg->time_stamp, submsg->from);
    in_the_air--;
    on_the_ground++;
@@ -80,7 +80,7 @@ departure_event_handler (void) {
    strncpy (dest, rnd_dest(), 14);
    ts = clock + (strcmp(dest,NEIGHBOUR1)==0 ? 0.7+rnd(0,1) : 0.4+rnd(0,1)); //7,9 - 4,6
    schedule_extern_event (ts, dest, create_submsg ("ARR", ""));
-   printf ("[%s]: %.1f  Partito volo per %s\n",  
+   printf ("[%s]: %.1f  Flight departed for %s\n",  
              LPNAME, msg->time_stamp, dest);
 }
 
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
              if (strcmp (submsg->event_type, "LAN")==0)  landed_event_handler ();
              if (strcmp (submsg->event_type, "DEP")==0)  departure_event_handler ();
           } else {
-             printf ("[%s]: -- condizione arresto raggiunta, clock=%.2f\n", LPNAME, clock);
+             printf ("[%s]: -- Stop condition reached, clock=%.2f\n", LPNAME, clock);
              end_reached = TRUE;
           }
           g_queue_free (queue);
