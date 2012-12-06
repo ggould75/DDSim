@@ -13,12 +13,12 @@
 typedef struct _msg_header_ipc    MsgHeaderIPC;
 
 
-/* Header per lo scambio di msg tramite fifo tra ogni simulatore e il suo lp
- * @type: non indica il tipo di evento, ma è usato internamente per lo scambio di msg 
- *        fra lp e simulatore
- * @target: indica LP destinazione quando il simulatore invia msg al suo lp, oppure mittente
- * @msg: puo' trasportare qualsiasi stringa semplice. In base alle esigenze del simulatore e'
- *       possibile incapsulare una sotto-header in questo msg di 24 byte (vedere es. simulatore)
+/**
+ * Header to exchange messages with the fifo between each simulator and its LP.
+ * @type: does not indicate the type of the event, but is for internal use to enable the communication
+ * @target: represents the destination LP (if the simulator is sending to its LP), otherwise the sender
+ * @msg: represents any kind of message. The simulator will be able also to encapsulate a sub-header
+ *       inside of this 24 bytes message
  */
 struct _msg_header_ipc {
     char      type;
