@@ -4,7 +4,7 @@
 #define         LPNAME       "LP2"
 #define         NEIGHBOUR1   "LP3"
 #define         NEIGHBOUR2   "LP4"
-
+ 
 double          end_clock = 100.0;
 gboolean        end_reached = FALSE;
 GQueue        * queue;
