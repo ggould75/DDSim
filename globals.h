@@ -5,8 +5,10 @@
 #include <errno.h>
 #include <stdio.h>
 
-/* decommentare la riga seguente per vedere nei dettagli 
- * il comportamento dell'algoritmo */
+
+/**
+ * Uncomment to see how the algorithm works
+ */
 //#define  DEBUG           1
 
 #define  MAX_NAME_LEN   15
@@ -19,7 +21,9 @@ typedef struct _full_msg_header    FullMsgHeader;
 typedef struct _null_msg_header    NullMsgHeader;
 typedef union   msg                Msg;
 
-/* ogni LP puo' avere piu' canali identificati in questo modo */
+/**
+ * Possible channels for an LP
+ */
 typedef enum {
     IN,
     OUT,
@@ -27,16 +31,18 @@ typedef enum {
     LOCAL
 } ChannelType;
 
-/* i dati di un LP vicino sono memorizzati in questa struttura */
+/**
+ * LP data
+ */
 struct _LPInfo {
     char                 name[MAX_NAME_LEN];
-    int                  fd[2]; // fd[0] usato per IN, fd[1] per OUT
+    int                  fd[2]; // fd[0] used for IN, fd[1] for OUT
     char                 ip_address[16];
-    unsigned short int   port;  // porta remota
-    GQueue             * queue_in;  // punta a null se il canale è di solo OUT
-    GList              * queue_out; // punta a null se il canale è di solo IN
-    GList              * queue;  // coda usata solo da lp locale per schedulare eventi locali
-    double               channel_time[2]; // usato solo 0
+    unsigned short int   port;  // remote port
+    GQueue             * queue_in;  // null if it is an out channel
+    GList              * queue_out; // null if it is an in channel
+    GList              * queue;  // This queue is only for the local LP, in order to schedule local events
+    double               channel_time[2]; // used only 0
     double               lookahead;
     ChannelType          type;
 };
@@ -52,7 +58,10 @@ struct _null_msg_header {
     double    time_stamp;
 };
 
-/* i msg spediti in rete dall'LP, usano come formato FullMsgHeader o NullMsgHeader */
+
+/**
+ * The two kind of messages sent through the network by an LP
+ */
 union msg {
     FullMsgHeader      full;
     NullMsgHeader      null;
@@ -60,25 +69,26 @@ union msg {
 
 
 
-/* array di puntatori a strutture LPInfo. 
- * channels_in ha un puntatore per ogni canale di ingresso
- * channels_out un puntatore per ogni canale di uscita
- * i canali di tipo BOTH hanno un puntatore sia in channels_in che channels_out */
+/**
+ * Arrays of LPInfo structures.
+ * channels_in has a pointer for each input channel
+ * channels_out has a pointer for each output channel
+ * The channels of type BOTH have a pointer both in channels_in and channels_out
+ */
 GPtrArray * channels_in, *channels_out;
 
 FILE      * config_file;
 char        config_filename[25];
 char        simulator_filename[25];
-int         fifo_fdin, fifo_fdout; // fifo per comunicaz. con simulatore
+int         fifo_fdin, fifo_fdout; // fifo to communicate with the simulator
 
 /* this lp data */
 LPInfo    * local_lp;
 double      clock;
 double      end_clock;
 gboolean    stop_received;
-int         active_in_channels; // numero di canali di ingresso ancora attivi
-                                // se raggiunge 0, l'LP non legge più i messaggi
-                                // dai canali di ingresso
+int         active_in_channels; // number of input channels still active
+                                // if 0 is reached, the LP will no longer read the messages from the input channels
 
 void error_exit  (const char *str);
 void stampa_coda (LPInfo *lp, int what);
