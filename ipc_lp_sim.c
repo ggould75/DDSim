@@ -11,7 +11,9 @@ int       fifo_fdin;
 int       fifo_fdout;
 
 
-/* print error msg and exit */
+/**
+ * Prints an error and exits
+ */
 static void
 error_exit (const char *str) {
     char strmess[1024];
@@ -25,8 +27,10 @@ error_exit (const char *str) {
 }
 
 
-/* Crea fifo per comunicare con il proprio LP, inizializza clock a 0,
- * imposta il nome dell'LP locale (usato in schedule_local_event()) */
+/**
+ * Creates a fifo for the communications with its LP, init the clock to 0,
+ * setup the name of the local LP (used in schedule_local_event())
+ */
 void
 init_communication (char this_lp_name[]) {
     char tmp[25];
@@ -47,8 +51,10 @@ init_communication (char this_lp_name[]) {
     strcpy (local_lp_name, this_lp_name);
 }
 
-/* chiude in modo sincronizzato la fifo con l'LP,
- * questo evita errori di 'broken pipe' */
+
+/**
+ * Closes the fifo with the LP in a syncronized way, this avoid errors such as 'broken pipe'
+ */
 void
 close_communication (void) {
    char  type;
@@ -70,7 +76,10 @@ close_communication (void) {
    close (fifo_fdout);
 }
 
-/* Spedisce al proprio LP una richiesta di invio messaggio ad LP 'dest' */
+
+/**
+ * Requests to its LP to send a new event
+ */
 void
 schedule_extern_event (double time_stamp, char dest[], char msg[]) {
    MsgHeaderIPC  msgh;
@@ -95,8 +104,9 @@ schedule_extern_event (double time_stamp, char dest[], char msg[]) {
 }
 
 
-/* E' un "alias" alla funzione precedente che passa pero' come dest.
- * il nome dell'LP locale */
+/**
+ * Convenience function like the previous using the name of the local LP
+ */
 void
 schedule_local_event (double time_stamp, char msg[]) {
    schedule_extern_event (time_stamp, local_lp_name, msg);
@@ -130,15 +140,15 @@ receive_event (void) {
              g_queue_push_tail (msg_queue, (gpointer)msgh_ipc);
              break;
           
-          /* l'LP non ha inviato alcun msg processabile--> devo sincronizzare il clock,
-		   * in questo modo se voglio generare nuovi eventi lo faccio usando il clock giusto !!! */
+          // The LP has not sent any processable msg --> syncronize the clock.
+          // In this way I will be able to generate new events with the right clock
           case SYNC_MSG:
              if ( read (fifo_fdin, &clock, sizeof(double)) < 0 )
                 error_exit ("receive_extern_event() clock read error:");
              end = TRUE;
              break;
           
-          /* ...non c'e' altro da dire su questa faccenda... (f.g.) */
+          // ...That’s all I have to say about that... (F.G.)
           case END_MSG: 
              end = TRUE;
        }
@@ -146,8 +156,11 @@ receive_event (void) {
    return msg_queue;
 }
 
-/* attende che LP dica: "vai con DIO".
- * sincronizza anche il clock se necessario */
+
+/**
+ * Wait until the LP say: "Go with god".
+ * The clock is also syncronized if necessary
+ */
 void 
 sim_P (void) {
    char  type;
@@ -160,7 +173,9 @@ sim_P (void) {
    }
 }
 
-/* restituisce il controllo a LP */
+/**
+ * Gives back the ownership to the LP
+ */
 void 
 sim_V (void) {
    char  end_char;
