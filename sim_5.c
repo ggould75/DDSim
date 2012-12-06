@@ -10,7 +10,7 @@ gboolean        end_reached = FALSE;
 GQueue        * queue;
 MsgHeaderIPC  * msg;
 
-
+ 
 double
 rnd (int min, int max) {
    return (double)((random()%(max-(min-1)))+min);
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
    int      i=1;
    double   last_ts = 0.0, ts;
    char     lmsg[24];
-   
+
    srandom (getpid());
    init_communication (LPNAME);
 	
